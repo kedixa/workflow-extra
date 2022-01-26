@@ -1,0 +1,5 @@
+foreach(example PipeRedisExample QpsPoolExample)
+    add_executable(${example} ${example}.cc)
+    target_link_libraries(${example} workflow workflow-extra)
+    add_dependencies(${example} workflow-extra)
+endforeach()
