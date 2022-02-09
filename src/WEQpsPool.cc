@@ -5,13 +5,13 @@
 
 class WEQpsTask : public WFGenericTask {
 public:
-    WEQpsTask(SubTask *task, WEQpsPool *pool)
-        : task(task), pool(pool) { }
+    WEQpsTask(SubTask *task, WEQpsPool *pool, size_t cnt)
+        : task(task), pool(pool), cnt(cnt) { }
 
 protected:
     virtual void dispatch() {
         constexpr long long SEC_MOD = 1000000000;
-        long long wait = pool->get_wait_nano();
+        long long wait = pool->get_wait_nano(cnt);
         SeriesWork *series = series_of(this);
 
         if (task) {
@@ -20,14 +20,16 @@ protected:
         }
 
         if (wait > 0) {
+            WEQpsPool *this_pool = pool;
+            size_t this_cnt = cnt;
             auto *timer = WFTaskFactory::create_timer_task(wait / SEC_MOD, wait % SEC_MOD,
-                [this](WFTimerTask *) {
-                    pool->done();
+                [this_pool, this_cnt](WFTimerTask *) {
+                    this_pool->done(this_cnt);
             });
             series->push_front(timer);
         }
         else
-            pool->done();
+            pool->done(this->cnt);
 
         WFGenericTask::dispatch();
     }
@@ -35,6 +37,7 @@ protected:
 private:
     SubTask *task;
     WEQpsPool *pool;
+    size_t cnt;
 };
 
 static long long __get_current_nano() {
@@ -55,14 +58,15 @@ void WEQpsPool::set_qps(unsigned qps) {
         interval_nano = 1000000000ULL / qps;
 }
 
-SubTask *WEQpsPool::get(SubTask *task) {
-    return new WEQpsTask(task, this);
+SubTask *WEQpsPool::get(SubTask *task, size_t cnt) {
+    return new WEQpsTask(task, this, cnt);
 }
 
-long long WEQpsPool::get_wait_nano() {
+long long WEQpsPool::get_wait_nano(size_t cnt) {
     std::lock_guard<std::mutex> lg(mtx);
     long long current = __get_current_nano();
-    long long next = last_nano + interval_nano;
+    long long cost = interval_nano * cnt;
+    long long next = last_nano + cost;
     if (next >= current) {
         last_nano = next;
         return next - current;

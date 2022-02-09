@@ -9,13 +9,13 @@ public:
     WEQpsPool(unsigned qps = 0);
 
     void set_qps(unsigned qps);
-    SubTask *get(SubTask *task);
+    SubTask *get(SubTask *task, size_t cnt = 1);
 
     friend class WEQpsTask;
 
 protected:
-    virtual long long get_wait_nano();
-    virtual void done() { }
+    virtual long long get_wait_nano(size_t cnt);
+    virtual void done(size_t cnt) { }
 
 private:
     std::mutex mtx;
