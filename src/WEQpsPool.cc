@@ -58,7 +58,7 @@ void WEQpsPool::set_qps(unsigned qps) {
         interval_nano = 1000000000ULL / qps;
 }
 
-SubTask *WEQpsPool::get(SubTask *task, size_t cnt) {
+WFGenericTask *WEQpsPool::get(SubTask *task, size_t cnt) {
     return new WEQpsTask(task, this, cnt);
 }
 

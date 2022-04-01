@@ -9,7 +9,7 @@ public:
     WEQpsPool(unsigned qps = 0);
 
     void set_qps(unsigned qps);
-    SubTask *get(SubTask *task, size_t cnt = 1);
+    WFGenericTask *get(SubTask *task, size_t cnt = 1);
 
     friend class WEQpsTask;
 
