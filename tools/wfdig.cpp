@@ -7,6 +7,7 @@
 #include "workflow/DnsUtil.h"
 
 using namespace std;
+using protocol::DnsResultCursor;
 
 string nameserver("8.8.8.8");
 WFFacilities::WaitGroup wg(1);
