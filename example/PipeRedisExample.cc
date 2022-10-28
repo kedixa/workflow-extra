@@ -4,7 +4,7 @@
 
 #include "workflow/WFFacilities.h"
 #include "workflow/StringUtil.h"
-#include "WETaskFactory.h"
+#include "TaskFactory.h"
 using namespace std;
 
 WFFacilities::WaitGroup wait_group(1);

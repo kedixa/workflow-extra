@@ -1,11 +1,13 @@
 #include <chrono>
 
-#include "WEQpsPool.h"
+#include "QpsPool.h"
 #include "workflow/WFTaskFactory.h"
 
-class WEQpsTask : public WFGenericTask {
+namespace wfextra {
+
+class QpsTask : public WFGenericTask {
 public:
-    WEQpsTask(SubTask *task, WEQpsPool *pool, size_t cnt)
+    QpsTask(SubTask *task, QpsPool *pool, size_t cnt)
         : task(task), pool(pool), cnt(cnt) { }
 
 protected:
@@ -20,7 +22,7 @@ protected:
         }
 
         if (wait > 0) {
-            WEQpsPool *this_pool = pool;
+            QpsPool *this_pool = pool;
             size_t this_cnt = cnt;
             auto *timer = WFTaskFactory::create_timer_task(wait / SEC_MOD, wait % SEC_MOD,
                 [this_pool, this_cnt](WFTimerTask *) {
@@ -36,7 +38,7 @@ protected:
 
 private:
     SubTask *task;
-    WEQpsPool *pool;
+    QpsPool *pool;
     size_t cnt;
 };
 
@@ -45,12 +47,12 @@ static long long __get_current_nano() {
     return std::chrono::duration_cast<std::chrono::nanoseconds>(now).count();
 }
 
-WEQpsPool::WEQpsPool(unsigned qps) {
+QpsPool::QpsPool(unsigned qps) {
     last_nano = 0;
     set_qps(qps);
 }
 
-void WEQpsPool::set_qps(unsigned qps) {
+void QpsPool::set_qps(unsigned qps) {
     std::lock_guard<std::mutex> lg(mtx);
     if (qps == 0)
         interval_nano = 0;
@@ -58,11 +60,11 @@ void WEQpsPool::set_qps(unsigned qps) {
         interval_nano = 1000000000ULL / qps;
 }
 
-WFGenericTask *WEQpsPool::get(SubTask *task, size_t cnt) {
-    return new WEQpsTask(task, this, cnt);
+SubTask *QpsPool::get(SubTask *task, size_t cnt) {
+    return new QpsTask(task, this, cnt);
 }
 
-long long WEQpsPool::get_wait_nano(size_t cnt) {
+long long QpsPool::get_wait_nano(size_t cnt) {
     std::lock_guard<std::mutex> lg(mtx);
     long long current = __get_current_nano();
     long long cost = interval_nano * cnt;
@@ -76,3 +78,5 @@ long long WEQpsPool::get_wait_nano(size_t cnt) {
         return 0;
     }
 }
+
+} // namespace wfextra

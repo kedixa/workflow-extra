@@ -6,11 +6,13 @@
 #include "workflow/StringUtil.h"
 
 #include "PipeRedisMessage.h"
-#include "WETaskFactory.h"
+#include "TaskFactory.h"
 
 using namespace protocol;
 
 #define REDIS_KEEPALIVE_DEFAULT  (60 * 1000)
+
+namespace wfextra {
 
 /**********Client**********/
 
@@ -174,7 +176,7 @@ bool ComplexPipeRedisTask::finish_once() {
 
 /**********Factory**********/
 // redis://:password@host:port/db_num
-WEPipeRedisTask *WETaskFactory::create_piperedis_task(
+PipeRedisTask *TaskFactory::create_piperedis_task(
     const std::string& url,
     int retry_max,
     piperedis_callback_t callback)
@@ -188,7 +190,7 @@ WEPipeRedisTask *WETaskFactory::create_piperedis_task(
     return task;
 }
 
-WEPipeRedisTask *WETaskFactory::create_piperedis_task(
+PipeRedisTask *TaskFactory::create_piperedis_task(
     const ParsedURI& uri,
     int retry_max,
     piperedis_callback_t callback)
@@ -200,3 +202,4 @@ WEPipeRedisTask *WETaskFactory::create_piperedis_task(
     return task;
 }
 
+} // namespace wfextra

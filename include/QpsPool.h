@@ -2,16 +2,18 @@
 #define WE_QPS_POOL_H
 
 #include <mutex>
-#include "workflow/WFTask.h"
+#include "workflow/SubTask.h"
 
-class WEQpsPool {
+namespace wfextra {
+
+class QpsPool {
 public:
-    WEQpsPool(unsigned qps = 0);
+    QpsPool(unsigned qps = 0);
 
     void set_qps(unsigned qps);
-    WFGenericTask *get(SubTask *task, size_t cnt = 1);
+    SubTask *get(SubTask *task, size_t cnt = 1);
 
-    friend class WEQpsTask;
+    friend class QpsTask;
 
 protected:
     virtual long long get_wait_nano(size_t cnt);
@@ -22,5 +24,9 @@ private:
     long long interval_nano;
     long long last_nano;
 };
+
+} // namespace wfextra
+
+using WEQpsPool = wfextra::QpsPool;
 
 #endif // WE_QPS_POOL_H

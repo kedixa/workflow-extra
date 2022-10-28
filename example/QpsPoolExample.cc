@@ -1,7 +1,7 @@
 #include <iostream>
 #include <chrono>
 #include "workflow/WFFacilities.h"
-#include "WEQpsPool.h"
+#include "QpsPool.h"
 
 using namespace std;
 
@@ -21,13 +21,16 @@ int main(int argc, char *argv[]) {
     WFFacilities::WaitGroup wg(tasks);
 
     auto start = std::chrono::system_clock::now();
+
     for (int i = 0; i < tasks; i++) {
         auto *task = WFTaskFactory::create_go_task("", [&]() {
             wg.done();
         });
         Workflow::start_series_work(pool.get(task), nullptr);
     }
+
     wg.wait();
+
     auto stop = std::chrono::system_clock::now();
     std::chrono::duration<double> d(stop - start);
 
