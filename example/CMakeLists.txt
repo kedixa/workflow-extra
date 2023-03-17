@@ -1,5 +1,15 @@
+link_directories(${WORKFLOW_LIB_DIR})
+
 foreach(example PipeRedisExample QpsPoolExample LatchExample GoPipeExample)
-    add_executable(${example} ${example}.cc)
-    target_link_libraries(${example} workflow workflow-extra)
+    add_executable(${example} ${example}.cpp)
     add_dependencies(${example} workflow-extra)
+
+    target_link_libraries(${example}
+        workflow
+        workflow-extra
+        Threads::Threads
+        OpenSSL::SSL
+        OpenSSL::Crypto
+    )
+
 endforeach()

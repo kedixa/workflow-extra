@@ -1,5 +1,15 @@
-add_executable(wfdig
-    wfdig.cpp
-)
+link_directories(${WORKFLOW_LIB_DIR})
 
-target_link_libraries(wfdig workflow)
+foreach(example wfdig)
+    add_executable(${example} ${example}.cpp)
+    add_dependencies(${example} workflow-extra)
+
+    target_link_libraries(${example}
+        workflow
+        workflow-extra
+        Threads::Threads
+        OpenSSL::SSL
+        OpenSSL::Crypto
+    )
+
+endforeach()
