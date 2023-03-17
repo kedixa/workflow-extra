@@ -1,6 +1,7 @@
 link_directories(${WORKFLOW_LIB_DIR})
 
-foreach(example PipeRedisExample QpsPoolExample LatchExample GoPipeExample)
+foreach(example PipeRedisExample QpsPoolExample LatchExample GoPipeExample
+        RefPtrExample)
     add_executable(${example} ${example}.cpp)
     add_dependencies(${example} workflow-extra)
 
