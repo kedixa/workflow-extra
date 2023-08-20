@@ -1,6 +1,9 @@
 # WorkflowExtra
 本项目为 [C++ Workflow](https://github.com/sogou/workflow) 的外传，用于探索新颖的辅助组件、奇特的使用方式等。本项目实现的接口可能随时被修改、移动、删除，功能可能随时修改含义，请知悉。
 
+## 搬迁通知
+我们的游乐场搬迁到[coke](https://github.com/kedixa/coke)啦，`coke`致力于以协程的方式使用`Workflow`，在协程模式下有更多有趣的内容值得探索。有趣的想法会优先在`coke`上实现，本项目或长期停更。
+
 ## PipeRedisTask
 `Redis`任务的`pipeline`模式，一次性向`Redis`发送多条命令，可以提高吞吐量。由于`pipeline`并不是事务，该客户端只是如实地将所有请求发出去，同时接收到所有回复，故一致性等问题不做保证。
 
