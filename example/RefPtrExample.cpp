@@ -23,7 +23,7 @@ int main() {
     vec_char_ptr.reset(std::vector<char>());
     vec_char_ptr.reset({'x', 'y'});
 
-    constexpr std::initializer_list<char> il{'a', 'b', 'c'};
+    std::initializer_list<char> il{'a', 'b', 'c'};
     str_ptr.reset(il);
 
     printf("str_ptr:%s\n", str_ptr->c_str());
